@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Repair Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input, button {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Broken Vehicle Repair Calculator</h1>
+    <label for="initialCount">Initial Count of Broken Vehicles:</label>
+    <input type="number" id="initialCount" placeholder="e.g. 800">
+
+    <label for="incomingRate">New Incoming Broken Vehicles (per month):</label>
+    <input type="number" id="incomingRate" placeholder="e.g. 40">
+
+    <label for="repairRate">Repair Rate (vehicles per technician per month):</label>
+    <input type="number" id="repairRate" placeholder="e.g. 35">
+
+    <label for="technicians">Number of Repair Technicians:</label>
+    <input type="number" id="technicians" placeholder="e.g. 4">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Broken Vehicles</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        function calculate() {
+            const initialCount = parseInt(document.getElementById('initialCount').value);
+            const incomingRate = parseInt(document.getElementById('incomingRate').value);
+            const repairRate = parseInt(document.getElementById('repairRate').value);
+            const technicians = parseInt(document.getElementById('technicians').value);
+            const maxMonths = 24;
+
+            let currentCount = initialCount;
+            let month = 0;
+            const tbody = document.querySelector('#resultTable tbody');
+            tbody.innerHTML = '';
+
+            while (currentCount > 0 && month < maxMonths) {
+                month++;
+                currentCount += incomingRate; // Add new incoming vehicles
+                currentCount -= repairRate * technicians; // Subtract repaired vehicles
+
+                let displayValue = currentCount <= 0 ? "Maintenance Level Achieved" : currentCount;
+                
+                const row = `<tr><td>${month}</td><td>${displayValue}</td></tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            }
+
+            if (currentCount > 0) {
+                const row = `<tr><td colspan="2">Stopped at ${maxMonths} months</td></tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            }
+        }
+    </script>
+</body>
+</html>
