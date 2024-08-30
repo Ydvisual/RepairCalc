@@ -29,6 +29,12 @@
             padding: 10px;
             text-align: center;
         }
+        .result-section {
+            margin-top: 20px;
+        }
+        .result-section p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -58,6 +64,10 @@
         </tbody>
     </table>
 
+    <div class="result-section" id="monthlyValues">
+        <!-- Monthly values will be displayed here -->
+    </div>
+
     <script>
         function calculate() {
             const initialCount = parseInt(document.getElementById('initialCount').value);
@@ -71,10 +81,24 @@
             const tbody = document.querySelector('#resultTable tbody');
             tbody.innerHTML = '';
 
+            const monthlyValues = document.getElementById('monthlyValues');
+            monthlyValues.innerHTML = ''; // Clear previous values
+
+            const technicianDelta = -repairRate * technicians; // Repairs per month (negative number)
+            const overallReductionRate = technicianDelta + incomingRate; // Net change per month
+
+            const summary = `
+                <p>Technician delta: ${technicianDelta}</p>
+                <p>Incoming new delta: +${incomingRate}</p>
+                <p>Overall reduction rate: ${overallReductionRate}</p>
+            `;
+
+            monthlyValues.insertAdjacentHTML('beforeend', summary);
+
             while (currentCount > 0 && month < maxMonths) {
                 month++;
                 currentCount += incomingRate; // Add new incoming vehicles
-                currentCount -= repairRate * technicians; // Subtract repaired vehicles
+                currentCount += technicianDelta; // Subtract repaired vehicles
 
                 let displayValue = currentCount <= 0 ? "Maintenance Level Achieved" : currentCount;
                 
